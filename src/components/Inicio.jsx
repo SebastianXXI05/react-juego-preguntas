@@ -1,24 +1,21 @@
 import { ThemeContext } from '../context/ContextGeneral'
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
+import Preguntas from './Preguntas'
+import randomQuestions from '../helpers/randomOpc'
 
 export default () => {
   const { questions, setQuestions } = useContext(ThemeContext)
+  const [playing, setPlaying] = useState(false)
+  const [terminado, setTerminado] = useState(false)
+  const [numPregunta, setNumPregunta] = useState(0) 
+  const [points, setPoints] = useState(0)
 
-  const randomQuestions = (array) => {
-    const numbers = []
-    const newArr = []
-
-    while (newArr.length !== array.length) {
-      let randomNum = Math.floor(Math.random()*array.length)
-      while (numbers.includes(randomNum)) {
-        randomNum = Math.floor(Math.random()*array.length)
-      }
-      numbers.push(randomNum)
-      newArr.push(array[randomNum])
-    }
-    return newArr
+  const handleNum = (value, point) => {
+    setPoints(points + point)
+    setNumPregunta(numPregunta + value)
+    numPregunta+1 >= questions.length ? setTerminado(true) : null
   }
-  
+
   useEffect(() => {
     let numId = 0
     const newArr = questions.filter(e => {
@@ -36,10 +33,39 @@ export default () => {
     <div>
       <h1>Juego de Preguntas</h1>
       <button 
-          onClick={() => questions.length === 0 ? alert('No hay preguntas') : console.log(questions)}
+          onClick={() => questions.length === 0 ? alert('No hay preguntas') : setPlaying(true) }
+          style={{display: playing ? 'none' : 'block'}}
         >
         Iniciar
       </button>
+      <div>
+        {playing && numPregunta < questions.length ? 
+          <h2>{numPregunta + 1}/{questions.length}</h2> : null
+        }
+        <Preguntas 
+          handleNum={handleNum} 
+          data={playing && numPregunta < questions.length  ? questions[numPregunta] : {}} 
+        />
+        {/* CUANDO TERMINA*/}
+        {
+          terminado ?
+            <div>
+              <h2>Resultado</h2>
+              <h3>Calificación: {points}/{questions.length}</h3>
+              <button
+                onClick={() => {
+                  setPlaying(false)
+                  setNumPregunta(0)
+                  setPoints(0)
+                  setTerminado(false)
+                }}
+              >
+                Reiniciar
+              </button>
+            </div>
+          : null
+        }
+      </div>
     </div>
   )
 }
