@@ -12,22 +12,24 @@ export default () => {
   // console.log(questions)
   return (
     <div>
-      <h1>Añade Preguntas</h1>
+      <h1 className='text-4xl md:text-5xl md:text-center mb-8 text-teal-800'>Añade Preguntas</h1>
       
       <form
         action="#"
         onSubmit={(e) => e.preventDefault()}
+        className='flex flex-col items-start md:items-center'
       >
         {
           preguntas.map((e, i) => {
             return (
-              <div key={i}>
+              <div key={i} className='mb-4 w-full md:w-3/4'>
                 <input
                   type="text"
                   id={`input-${i}`}
                   placeholder={i === 3 ? 'Respuesta' : i === 0 ? 'Nombre de la pregunta' : `Opcion#${i}`}
                   value={preguntas[i]}
                   onChange={(e) => HandleOnPregunta(i, e.target.value)}
+                  className='border-solid border-2 border-teal-800 placeholder:text-xl w-full p-2'
                 />
               </div>
             )
@@ -52,6 +54,7 @@ export default () => {
             setQuestions(newQuestion)
             setPreguntas(new Array(4).fill(''))
           }}
+          className='bg-teal-800 text-white text-2xl py-2 px-4 md:text-xl hover:bg-teal-700'
         >
           Añadir
         </button>
